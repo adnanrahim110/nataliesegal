@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-noticia: 'Noticia Text', serif;
+  --font-mr-de: 'Mr De Haviland', serif;
+  --font-questrial: 'Questrial', sans-serif;
+
+  --color-primary-50: #effaf5;
+  --color-primary-100: #d9f2e5;
+  --color-primary-200: #b7e3cf;
+  --color-primary-300: #87ceb2;
+  --color-primary-400: #54b38f;
+  --color-primary-500: #339674;
+  --color-primary-600: #23785d;
+  --color-primary-700: #1c604d;
+  --color-primary-800: #184d3e;
+  --color-primary-900: #12372d;
+  --color-primary-950: #0b231e;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  * {
+    @apply box-border p-0 m-0;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    @apply bg-white text-neutral-800 font-questrial;
+  }
+
+  :is(button, a, input, textarea, select) {
+    @apply cursor-pointer outline-none focus:outline-none;
+  }
+
+  :is(h1, h2, h3, h4, h5, h6) {
+    @apply font-bold font-noticia leading-tight;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .container {
+    @apply w-full relative mx-auto px-3 max-w-full sm:max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-6xl 2xl:max-w-7xl;
+  }
+}
+
+@layer components {
+  .row {
+    @apply flex flex-wrap -mx-3 w-full *:w-full *:relative *:px-3;
+  }
 }
