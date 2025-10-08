@@ -76,10 +76,8 @@ const Footer = () => {
                 />
               </Link>
               <p className="text-sm text-neutral-400 max-w-md">
-                Author, speaker, and coach sharing stories and tools to help you
-                live with courage and clarity.
-                <br />
-                Honest, warm, and grounded guidance for meaningful change.
+                The beauty of life is often hidden in the ordinary. My work
+                helps you see it, trust it, and live it.
               </p>
             </div>
 
@@ -88,7 +86,7 @@ const Footer = () => {
                 Quick Links
               </h4>
               <ul className="space-y-2">
-                {NAV_LINKS.map((link, i) => (
+                {NAV_LINKS.slice(1).map((link, i) => (
                   <li key={i}>
                     <Link
                       href={link.href}

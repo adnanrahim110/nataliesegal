@@ -32,17 +32,17 @@ const Author = () => {
           </div>
 
           <div className="space-y-6 md:order-1">
-            <SectionSubtitle>About the Author</SectionSubtitle>
+            <SectionSubtitle>Author Insight</SectionSubtitle>
             <SectionTitle as="h2" size="section">
-              Meet Natalie Segal
+              The Mind Behind the Magic
             </SectionTitle>
             <p className="text-neutral-700 max-w-xl">
-              Natalie Segal is an author, speaker, and coach who helps people
-              find courage and clarity through honest storytelling and practical
-              tools. Drawing from years of experience working with individuals
-              and groups, she writes with warmth and grounded insight, inviting
-              readers to take small, compassionate steps toward meaningful
-              change in everyday life.
+              Natalie Segal came to fiction after years as a technical writer
+              and teacher. She brings that precision to her storytelling,
+              grounded, intelligent, and deeply human. When she isn’t writing
+              contemporary fantasy or haiku, she’s dancing the rumba or watching
+              birds. Heroes of the Middle Ages is her first novel, written with
+              the care of someone who understands both science and wonder.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <Button href="/about">More about Natalie</Button>

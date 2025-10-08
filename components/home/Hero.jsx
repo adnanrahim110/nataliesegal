@@ -19,15 +19,17 @@ const Hero = () => {
       <div className="container py-16 md:py-28">
         <div className="grid items-center gap-12 md:gap-16 md:grid-cols-2">
           <div className="space-y-6">
-            <SectionSubtitle>Author • Speaker • Coach</SectionSubtitle>
+            <SectionSubtitle>Heroes of the Middle Ages</SectionSubtitle>
 
             <SectionTitle as="h1" size="hero">
-              Stories that heal, inspire, and empower
+              A Story of Magic, Mortality, and Connection
             </SectionTitle>
 
             <p className="text-neutral-700 max-w-xl">
-              Explore heartfelt narratives, practical wisdom, and tools to live
-              with courage and clarity.
+              Heroes of the Middle Ages weaves the old and the modern into a
+              spellbinding tale of blood, faith, and hidden power where family
+              ties cross centuries and magic leaves a mark that reason can’t
+              erase.
             </p>
 
             <div className="flex flex-wrap items-center gap-3">

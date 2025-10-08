@@ -57,13 +57,16 @@ const Cta = () => {
             <div className="space-y-6">
               <SectionSubtitle>Available Now</SectionSubtitle>
               <SectionTitle as="h2" size="section">
-                Bring the Book Home
+                Step Into the Mystery
               </SectionTitle>
+              <p>
+                “Magic hides in plain sight. Faith clashes with fear. And
+                ordinary people become heroes in ways they never imagined.”
+              </p>
               <p className="text-neutral-700">
-                Thoughtful, warm, and grounded in real life—this book blends
-                heartfelt stories with practical tools to help you move through
-                change, find your courage, and live with clarity. Get your copy
-                on Amazon today.
+                Natalie Segal’s Heroes of the Middle Ages is available now an
+                unforgettable journey through mystery, mortality, and the quiet
+                courage it takes to face the unknown.
               </p>
               <div className="pt-2">
                 <Button

@@ -21,6 +21,8 @@ const SectionTitle = ({
   className,
   titleClassName,
 }) => {
+  const sizeClasses = sizeMap[size] || size;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -33,9 +35,7 @@ const SectionTitle = ({
         className
       )}
     >
-      <Tag className={cn(sizeMap[size] ?? sizeMap.section, titleClassName)}>
-        {children}
-      </Tag>
+      <Tag className={cn(sizeClasses, titleClassName)}>{children}</Tag>
       {accent && (
         <motion.span
           initial={{ scaleX: 0, opacity: 0 }}

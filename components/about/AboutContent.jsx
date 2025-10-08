@@ -14,7 +14,6 @@ export default function AboutContent() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="relative overflow-hidden"
     >
-      {/* soft background glows */}
       <div
         aria-hidden
         className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-primary-200/30 blur-3xl"
@@ -29,13 +28,14 @@ export default function AboutContent() {
           <SectionSubtitle align="left">About</SectionSubtitle>
           <SectionTitle
             as="h1"
+            size="text-2xl lg:text-[38px]"
             align="left"
             fullWidth
             underlineWidth="w-24 md:w-32"
             accentClassName="bg-gradient-to-r from-primary-500 to-primary-300"
           >
-            Natalie Segal - Writer, teacher, swing dancer, observer of people
-            (and all things avian.)
+            “Stories aren’t about escape. They’re about recognition seeing a bit
+            of ourselves in the impossible.” — Natalie Segal
           </SectionTitle>
         </div>
 
@@ -47,7 +47,6 @@ export default function AboutContent() {
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.05 }}
             className="relative w-full"
           >
-            {/* image glow */}
             <div
               aria-hidden
               className="absolute -inset-6 -z-10 rounded-2xl bg-primary-200/30 blur-2xl"
@@ -69,24 +68,27 @@ export default function AboutContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.12 }}
-            className="space-y-6 max-w-xl mx-auto md:mx-0"
+            className="space-y-4 max-w-xl mx-auto md:mx-0"
           >
             <p className="text-neutral-700/90 text-[17px] md:text-lg leading-relaxed">
-              Welcome to the world of a late-blooming writer who used to work as
-              a technical writer and a college teacher of first-year composition
-              and technical writing. After raising two daughters, I write
-              contemporary fantasy (with haiku and poetry on the side) with a
-              space opera just for fun. I read fantasy (epic and contemporary
-              and sometimes romantasy), with murder mysteries my method of
-              calming myself to sleep. (I know, weird, but they work.)
+              A late-blooming storyteller, Natalie spent years as a technical
+              writer and college instructor before giving herself permission to
+              chase fiction full-time. After raising two daughters and a couple
+              of cats, she turned her attention to contemporary fantasy where
+              logic meets wonder, and ordinary people discover they’re capable
+              of extraordinary things.
             </p>
             <p className="text-neutral-700/90 text-[17px] md:text-lg leading-relaxed">
-              I also dance (rumba, foxtrot, East Coast swing), birdwatch—and
-              write. Did I mention I write? I’ve published short stories in
-              Zahir, an online fantasy magazine, and The MacGuffin, along with
-              haiku in Bottle Rockets. Novels will follow soon. Watch this space
-              for more. Please go to the blog for more about me and commentary
-              of books and writing. And thank you for visiting this page.
+              Her writing often blends humor, mystery, and empathy, inspired by
+              the small details most of us overlook. She’s published short
+              stories and haiku in Zahir, The MacGuffin, and Bottle Rockets.
+              Heroes of the Middle Ages is her first novel a story that explores
+              the uneasy border between reason and belief.
+            </p>
+            <p className="text-neutral-700/90 text-[17px] md:text-lg leading-relaxed">
+              When she isn’t writing, Natalie dances the rumba, foxtrot, or East
+              Coast swing, tends to her birdwatching lists, and reads fantasy
+              and murder mysteries to relax (yes, that’s her version of calm).
             </p>
             <p className="font-mr-de text-6xl pb-8 -rotate-12 text-primary-700/90">
               Natalie Segal

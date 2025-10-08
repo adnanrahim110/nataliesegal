@@ -32,17 +32,26 @@ const Book = () => {
           </div>
 
           <div className="space-y-6">
-            <SectionSubtitle className="bg-white/60">The Book</SectionSubtitle>
+            <SectionSubtitle className="bg-white/60">
+              Inside the Story
+            </SectionSubtitle>
 
             <SectionTitle as="h2" size="section">
-              Discover the Book
+              Where Secrets, Faith, and Power Collide
             </SectionTitle>
 
-            <p className="text-neutral-700 max-w-xl">
-              A compassionate guide filled with stories and practices to help
-              you navigate change, find courage, and live with intention.
-              Thoughtful, warm, and grounded in real life.
-            </p>
+            <div className="space-y-2">
+              <p className="text-neutral-700 max-w-xl">
+                From Hartford crime scenes to ancient curses, every thread pulls
+                tighter as Miriam, Hannah, and Rose realize their lives are
+                linked by something far older than coincidence.
+              </p>
+              <p className="text-neutral-700 max-w-xl">
+                A ritual killing, a whisper of black magic, and a scholar who
+                knows too much. Each chapter unravels one truth: the past never
+                really dies, and neither do its monsters.
+              </p>
+            </div>
 
             <div className="flex flex-wrap items-center gap-3">
               <Button href="/contact">Buy Now</Button>

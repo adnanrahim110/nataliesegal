@@ -28,7 +28,11 @@
   }
 
   :is(button, a, input, textarea, select) {
-    @apply cursor-pointer outline-none focus:outline-none;
+    @apply outline-none focus:outline-none;
+  }
+
+  button {
+    @apply cursor-pointer;
   }
 
   :is(h1, h2, h3, h4, h5, h6) {
