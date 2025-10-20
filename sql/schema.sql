@@ -27,6 +27,17 @@ CREATE TABLE IF NOT EXISTS sessions (
   CONSTRAINT fk_sessions_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- Password reset tokens
+CREATE TABLE IF NOT EXISTS password_resets (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  token_hash CHAR(64) NOT NULL UNIQUE,
+  expires_at DATETIME NOT NULL,
+  used_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_password_resets_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- Blogs
 CREATE TABLE IF NOT EXISTS blogs (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -43,5 +54,16 @@ CREATE TABLE IF NOT EXISTS blogs (
   published TINYINT(1) NOT NULL DEFAULT 1,
   published_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- Blog comments
+CREATE TABLE IF NOT EXISTS blog_comments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  blog_id INT NOT NULL,
+  name VARCHAR(190) NOT NULL DEFAULT 'Anonymous',
+  message TEXT NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_blog_comments_blog FOREIGN KEY (blog_id) REFERENCES blogs(id) ON DELETE CASCADE,
+  INDEX idx_blog_comments_blog_created (blog_id, created_at)
 ) ENGINE=InnoDB;
 

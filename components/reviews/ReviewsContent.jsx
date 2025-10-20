@@ -97,7 +97,7 @@ export default function ReviewsContent() {
               className="group relative"
             >
               <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-primary-300/50 via-amber-200/30 to-primary-200/40 opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative rounded-2xl bg-white/90 p-8 shadow-xl ring-1 ring-black/5 backdrop-blur-sm h-full overflow-hidden">
+              <div className="relative rounded-2xl bg-white/90 p-8 shadow-sm ring-1 ring-black/5 backdrop-blur-sm h-full overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-100/40 to-transparent rounded-full blur-2xl -translate-y-16 translate-x-16" />
 
                 <div className="relative z-10">

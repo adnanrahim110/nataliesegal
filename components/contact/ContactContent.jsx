@@ -51,8 +51,8 @@ export default function ContactContent() {
     {
       icon: FaEnvelope,
       label: "Email",
-      value: "hello@nataliesegal.com",
-      href: "mailto:hello@nataliesegal.com",
+      value: "segalnataliedee@gmail.com",
+      href: "mailto:segalnataliedee@gmail.com",
     },
 
     {
@@ -130,8 +130,8 @@ export default function ContactContent() {
             className="order-2 lg:order-1 lg:col-span-3"
           >
             <div className="relative group/form">
-              <div className="absolute -inset-1 bg-gradient-to-br from-primary-400/30 via-purple-400/20 to-amber-400/30 rounded-3xl blur-lg group-hover:blur-xl transition-all duration-500 opacity-60" />
-              <div className="relative rounded-3xl bg-white/95 p-10 shadow-sm ring-1 ring-white/20 backdrop-blur-xl border border-white/30">
+              <div className="absolute -inset-px bg-gradient-to-br from-primary-400/30 via-purple-400/20 to-amber-400/30 rounded-3xl transition-all duration-500 opacity-60" />
+              <div className="relative rounded-3xl bg-white/95 p-10 ring-1 ring-white/20 backdrop-blur-xl border border-white/30">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary-200/30 to-transparent rounded-full blur-3xl -translate-y-20 translate-x-20" />
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-amber-200/20 to-transparent rounded-full blur-2xl translate-y-16 -translate-x-16" />
 

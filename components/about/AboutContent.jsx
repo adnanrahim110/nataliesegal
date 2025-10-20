@@ -28,14 +28,15 @@ export default function AboutContent() {
           <SectionSubtitle align="left">About</SectionSubtitle>
           <SectionTitle
             as="h1"
-            size="text-2xl lg:text-[38px]"
+            size="text-2xl lg:text-[38px] xl:text-[43px]"
             align="left"
             fullWidth
             underlineWidth="w-24 md:w-32"
             accentClassName="bg-gradient-to-r from-primary-500 to-primary-300"
           >
             “Stories aren’t about escape. They’re about recognition seeing a bit
-            of ourselves in the impossible.” — Natalie Segal
+            of ourselves in the impossible.”{" "}
+            <span className="text-primary-500"> — Natalie Segal</span>
           </SectionTitle>
         </div>
 

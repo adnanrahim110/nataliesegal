@@ -1,5 +1,3 @@
-import Footer from "@/components/layouts/Footer";
-import Navbar from "@/components/layouts/Navbar";
 import { Mr_De_Haviland, Noticia_Text, Questrial } from "next/font/google";
 import "./globals.css";
 
@@ -32,9 +30,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${questrial.variable} ${noticiaText.variable} ${mrDeHaviland.variable} antialiased`}
       >
-        <Navbar />
         {children}
-        <Footer />
       </body>
     </html>
   );

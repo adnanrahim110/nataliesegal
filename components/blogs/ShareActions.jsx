@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FaLink, FaShareAlt } from "react-icons/fa";
+import { Share2, Link as LinkIcon } from "lucide-react";
 
 export default function ShareActions({ title, excerpt, className = "" }) {
   const [status, setStatus] = useState("idle"); // idle | copied | error
@@ -44,7 +44,7 @@ export default function ShareActions({ title, excerpt, className = "" }) {
         className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 transition-colors hover:bg-primary-50 hover:text-primary-700"
         aria-label="Share"
       >
-        <FaShareAlt />
+        <Share2 className="h-4 w-4" />
         {status === "copied" && (
           <span className="pointer-events-none absolute -top-7 whitespace-nowrap rounded-full bg-neutral-900 px-2 py-0.5 text-[11px] font-medium text-white shadow-md">
             Copied!
@@ -62,7 +62,7 @@ export default function ShareActions({ title, excerpt, className = "" }) {
         className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 transition-colors hover:bg-neutral-100"
         aria-label="Copy link"
       >
-        <FaLink />
+        <LinkIcon className="h-4 w-4" />
       </button>
     </div>
   );

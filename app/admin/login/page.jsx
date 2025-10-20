@@ -8,8 +8,10 @@ import { useEffect, useState } from "react";
 import {
   FaArrowLeft,
   FaCheckCircle,
+  FaEnvelopeOpenText,
   FaLock,
   FaShieldAlt,
+  FaTimes,
 } from "react-icons/fa";
 
 export default function AdminLoginPage() {
@@ -23,6 +25,14 @@ export default function AdminLoginPage() {
   const [passwordError, setPasswordError] = useState("");
   const [emailTouched, setEmailTouched] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotTouched, setForgotTouched] = useState(false);
+  const [forgotEmailError, setForgotEmailError] = useState("");
+  const [forgotSubmitting, setForgotSubmitting] = useState(false);
+  const [forgotSubmitError, setForgotSubmitError] = useState("");
+  const [forgotSubmitSuccess, setForgotSubmitSuccess] = useState("");
+  const [forgotResetUrl, setForgotResetUrl] = useState("");
 
   useEffect(() => {
     const savedRemember = localStorage.getItem("adminRemember");
@@ -64,6 +74,70 @@ export default function AdminLoginPage() {
     setPassword(value);
     setPasswordTouched(true);
     setPasswordError(validatePassword(value));
+  };
+
+  const openForgot = () => {
+    setForgotOpen(true);
+    setForgotEmail(email || "");
+    setForgotTouched(false);
+    setForgotEmailError("");
+    setForgotSubmitError("");
+    setForgotSubmitSuccess("");
+    setForgotResetUrl("");
+  };
+
+  const closeForgot = () => {
+    setForgotOpen(false);
+    setForgotSubmitting(false);
+    setForgotSubmitError("");
+  };
+
+  const handleForgotEmailChange = (e) => {
+    const value = e.target.value;
+    setForgotEmail(value);
+    setForgotTouched(true);
+    setForgotEmailError(validateEmail(value));
+    setForgotSubmitError("");
+    setForgotSubmitSuccess("");
+    setForgotResetUrl("");
+  };
+
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    setForgotTouched(true);
+    setForgotSubmitError("");
+    setForgotSubmitSuccess("");
+    setForgotResetUrl("");
+
+    const validation = validateEmail(forgotEmail);
+    setForgotEmailError(validation);
+    if (validation) return;
+
+    setForgotSubmitting(true);
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+      let data = {};
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        data = {};
+      }
+      if (!res.ok) {
+        throw new Error(data?.error || "Could not send reset link");
+      }
+      setForgotSubmitSuccess("If that email is registered, a reset link is on its way.");
+      if (typeof data?.resetUrl === "string") {
+        setForgotResetUrl(data.resetUrl);
+      }
+    } catch (err) {
+      setForgotSubmitError(err.message || "Could not send reset link");
+    } finally {
+      setForgotSubmitting(false);
+    }
   };
 
   const onSubmit = async (e) => {
@@ -221,12 +295,12 @@ export default function AdminLoginPage() {
                   <span className="font-medium text-neutral-600">Remember this device</span>
                 </label>
                 <button
-                    type="button"
-                    onClick={(e) => e.preventDefault()}
-                    className="font-medium text-primary-600 transition-colors hover:text-primary-700"
-                  >
-                    Forgot password?
-                  </button>
+                  type="button"
+                  onClick={openForgot}
+                  className="font-medium text-primary-600 transition-colors hover:text-primary-700"
+                >
+                  Forgot password?
+                </button>
               </div>
 
               {error ? (
@@ -239,7 +313,7 @@ export default function AdminLoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-neutral-900 px-5 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? (
                   <>
@@ -260,6 +334,117 @@ export default function AdminLoginPage() {
           </div>
         </main>
       </div>
+      {forgotOpen ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/70 px-4 py-8 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="relative w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6 shadow-2xl">
+            <button
+              type="button"
+              onClick={closeForgot}
+              className="absolute right-4 top-4 rounded-full p-1 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary-200"
+              aria-label="Close"
+              disabled={forgotSubmitting}
+            >
+              <FaTimes className="h-4 w-4" />
+            </button>
+
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-50 text-primary-600">
+              <FaEnvelopeOpenText className="h-6 w-6" />
+            </div>
+            <h2 className="mt-4 text-xl font-semibold text-neutral-900">Reset password</h2>
+            <p className="mt-2 text-sm text-neutral-600">
+              Enter your admin email address and we&apos;ll send you a secure password reset link.
+            </p>
+
+            <form onSubmit={handleForgotSubmit} className="mt-6 space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
+                  Email address
+                </label>
+                <input
+                  type="email"
+                  value={forgotEmail}
+                  onChange={handleForgotEmailChange}
+                  onBlur={() => {
+                    setForgotTouched(true);
+                    setForgotEmailError(validateEmail(forgotEmail));
+                  }}
+                  className={clsx(
+                    "w-full rounded-xl border bg-white px-4 py-3 text-sm text-neutral-800 shadow-sm transition-all focus:outline-none focus:ring-2",
+                    forgotEmailError
+                      ? "border-red-300 focus:border-red-400 focus:ring-red-100"
+                      : forgotTouched && forgotEmail
+                      ? "border-emerald-300 focus:border-emerald-400 focus:ring-emerald-100"
+                      : "border-neutral-200 focus:border-primary-400 focus:ring-primary-100"
+                  )}
+                  placeholder="admin@example.com"
+                  autoComplete="email"
+                  disabled={forgotSubmitting}
+                  required
+                />
+                {forgotEmailError ? (
+                  <p className="text-xs font-medium text-red-600">{forgotEmailError}</p>
+                ) : forgotTouched && forgotEmail ? (
+                  <p className="flex items-center gap-1 text-xs font-medium text-emerald-600">
+                    <FaCheckCircle /> Looks good
+                  </p>
+                ) : null}
+              </div>
+
+              {forgotSubmitError ? (
+                <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-600">
+                  <span className="h-2 w-2 rounded-full bg-red-500" />
+                  {forgotSubmitError}
+                </div>
+              ) : null}
+
+              {forgotSubmitSuccess ? (
+                <div className="space-y-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs text-emerald-700">
+                  <div className="flex items-center gap-2 font-semibold">
+                    <FaCheckCircle className="text-emerald-500" /> {forgotSubmitSuccess}
+                  </div>
+                  {forgotResetUrl ? (
+                    <div className="break-all rounded-lg bg-white/70 px-3 py-2 font-mono text-[11px] text-emerald-700">
+                      {forgotResetUrl}
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+                <button
+                  type="button"
+                  onClick={closeForgot}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-neutral-200 px-4 py-3 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary-200 sm:w-auto"
+                  disabled={forgotSubmitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={forgotSubmitting}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neutral-900 px-4 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                >
+                  {forgotSubmitting ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <FaLock /> Send reset link
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
+

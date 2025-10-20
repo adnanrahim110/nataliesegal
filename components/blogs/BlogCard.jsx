@@ -4,14 +4,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  FaArrowRight,
-  FaEye,
-  FaHeart,
-  FaRegComment,
-  FaRegHeart,
-  FaShareAlt,
-} from "react-icons/fa";
+import { ArrowRight, Eye, Heart, MessageCircle, Share2 } from "lucide-react";
 
 function HeartBurst({ seed = 0 }) {
   const dots = Array.from({ length: 8 });
@@ -98,6 +91,15 @@ export default function BlogCard({ post, delay = 0 }) {
     return (first + last).toUpperCase();
   }, [post?.author]);
 
+  const viewsDisplay = useMemo(
+    () => Number(post?.views || 0).toLocaleString(),
+    [post?.views]
+  );
+  const commentsDisplay = useMemo(
+    () => Number(post?.comments || 0).toLocaleString(),
+    [post?.comments]
+  );
+
   return (
     <div className="group/card relative rounded-3xl p-[1.5px] bg-gradient-to-tr from-primary-500/20 via-transparent to-primary-400/10">
       <motion.article
@@ -145,7 +147,7 @@ export default function BlogCard({ post, delay = 0 }) {
               className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary-700 hover:text-primary-800 transition-colors group/read"
             >
               Read more
-              <FaArrowRight className="transition-transform duration-200 group-hover/read:translate-x-0.5" />
+              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/read:translate-x-0.5" />
             </Link>
           ) : null}
 
@@ -167,12 +169,12 @@ export default function BlogCard({ post, delay = 0 }) {
           <div className="mt-5 flex items-center justify-between border-t border-neutral-200 pt-4">
             <div className="flex items-center gap-4 text-neutral-600">
               <span className="inline-flex items-center gap-1.5 text-sm">
-                <FaEye className="opacity-80" />
-                <span>{post.views.toLocaleString()}</span>
+                <Eye className="h-4 w-4 opacity-80" />
+                <span>{viewsDisplay}</span>
               </span>
               <span className="inline-flex items-center gap-1.5 text-sm">
-                <FaRegComment className="opacity-80" />
-                <span>{post.comments}</span>
+                <MessageCircle className="h-4 w-4 opacity-80" />
+                <span>{commentsDisplay}</span>
               </span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -189,11 +191,10 @@ export default function BlogCard({ post, delay = 0 }) {
                       : "border-neutral-200 bg-white text-neutral-700 hover:bg-red-50 hover:text-red-600",
                   ].join(" ")}
                 >
-                  {like.liked ? (
-                    <FaHeart className="text-red-600" />
-                  ) : (
-                    <FaRegHeart />
-                  )}
+                  <Heart
+                    className="h-4 w-4"
+                    fill={like.liked ? "currentColor" : "none"}
+                  />
                 </button>
                 {burstSeed > 0 && like.liked && (
                   <HeartBurst seed={`${post.id}-${burstSeed}`} />
@@ -207,13 +208,13 @@ export default function BlogCard({ post, delay = 0 }) {
               >
                 {like.count}
               </span>
-              <button
-                type="button"
-                onClick={handleShare}
-                aria-label="Share"
-                className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 transition-colors hover:bg-primary-50 hover:text-primary-700"
-              >
-                <FaShareAlt />
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  aria-label="Share"
+                  className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 transition-colors hover:bg-primary-50 hover:text-primary-700"
+                >
+                  <Share2 className="h-4 w-4" />
                 {shareState === "copied" && (
                   <span className="pointer-events-none absolute -top-7 whitespace-nowrap rounded-full bg-neutral-900 px-2 py-0.5 text-[11px] font-medium text-white shadow-md">
                     Copied!

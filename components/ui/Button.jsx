@@ -27,7 +27,8 @@ const Button = ({
     >
       <span
         className={cn(
-          "relative z-10 font-noticia text-primary-600 group-hover:text-white duration-500",
+          "relative z-10 font-noticia group-hover:text-white duration-500",
+          tone === "dark" ? "text-black" : "text-primary-600",
           contentClassName
         )}
       >

@@ -34,13 +34,13 @@ const Hero = () => {
 
             <div className="flex flex-wrap items-center gap-3">
               <Button href="/about">Learn more</Button>
-              <Button tone="dark" href="/stories">
+              <Button tone="dark" href="/blogs">
                 Read Stories
               </Button>
             </div>
           </div>
 
-          <div className="relative w-full mx-auto md:ml-auto max-w-[16rem] sm:max-w-[18rem] md:max-w-[22rem] lg:max-w-[24rem] aspect-[4/5]">
+          <div className="relative w-full ml-auto md:ml-auto max-w-[16rem] sm:max-w-[18rem] md:max-w-[22rem] lg:max-w-[32rem] aspect-[301/393]">
             <div className="pointer-events-none absolute -right-16 -top-10 h-56 w-56 rounded-full bg-primary-300/40 blur-3xl md:h-72 md:w-72" />
             <Image
               src="/imgs/author.avif"
@@ -48,7 +48,7 @@ const Hero = () => {
               fill
               priority
               sizes="(min-width: 1024px) 24rem, (min-width: 768px) 22rem, (min-width: 640px) 18rem, 16rem"
-              className="object-cover rounded-xl shadow-2xl ring-1 ring-black/5"
+              className="object-contain rounded-xl shadow-2xl ring-1 ring-black/5"
             />
           </div>
         </div>
