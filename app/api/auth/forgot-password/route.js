@@ -1,6 +1,8 @@
 import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
+import { sendForgotPasswordEmail } from "@/lib/email";
+import { getSiteUrl } from "@/lib/url";
 
 const RESET_TOKEN_BYTES = 32;
 const RESET_EXPIRY_MINUTES = 60;
@@ -12,9 +14,30 @@ function hashToken(token) {
 function getAppUrl(req) {
   const origin = req.headers.get("origin");
   if (origin && origin.startsWith("http")) return origin.replace(/\/$/, "");
-  const envUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
-  if (envUrl) return envUrl.replace(/\/$/, "");
-  return "http://localhost:3000";
+  return getSiteUrl();
+}
+
+async function ensurePasswordResetSchema() {
+  await query(`
+    CREATE TABLE IF NOT EXISTS password_resets (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      user_id INT NOT NULL,
+      token_hash CHAR(64) NOT NULL UNIQUE,
+      expires_at DATETIME NOT NULL,
+      used_at DATETIME NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT fk_password_resets_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB;
+  `);
+
+  const columns = await query(
+    "SHOW COLUMNS FROM password_resets LIKE 'used_at'"
+  );
+  if (columns.length === 0) {
+    await query(
+      "ALTER TABLE password_resets ADD COLUMN used_at DATETIME NULL AFTER expires_at"
+    );
+  }
 }
 
 export async function POST(req) {
@@ -35,8 +58,13 @@ export async function POST(req) {
     return NextResponse.json({ error: "Enter a valid email address" }, { status: 400 });
   }
 
+  await ensurePasswordResetSchema();
+
   try {
-    const users = await query(`SELECT id FROM users WHERE email = ? LIMIT 1`, [email]);
+    const users = await query(
+      `SELECT id, name FROM users WHERE email = ? LIMIT 1`,
+      [email]
+    );
     if (users.length === 0) {
       return NextResponse.json({ ok: true });
     }
@@ -55,13 +83,15 @@ export async function POST(req) {
 
     const appUrl = getAppUrl(req);
     const resetUrl = `${appUrl}/admin/login/reset?token=${token}`;
-    const responsePayload = { ok: true };
-    if (process.env.NODE_ENV !== "production") {
-      responsePayload.resetUrl = resetUrl;
-    }
+    await sendForgotPasswordEmail({
+      to: email,
+      name: users[0]?.name || "",
+      resetUrl,
+    });
 
-    return NextResponse.json(responsePayload);
+    return NextResponse.json({ ok: true });
   } catch (err) {
+    console.error("[Forgot Password] error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

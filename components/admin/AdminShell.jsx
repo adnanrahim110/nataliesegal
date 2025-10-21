@@ -168,15 +168,15 @@ export default function AdminShell({ children }) {
       >
         <div
           className={classNames(
-            "transition-all duration-200 border",
+            "transition-all duration-200 border text-center",
             collapsed
               ? "px-1 py-2 rounded-xl w-fit border-transparent"
-              : "border-neutral-200 bg-white/80 text-center shadow-sm rounded-3xl px-4 py-6 w-full"
+              : "border-neutral-200 bg-primary-500 text-center shadow-sm rounded-3xl px-4 py-6 w-full"
           )}
         >
           <Image
             src={
-              collapsed ? "/web-app-manifest-512x512.png" : "/imgs/logo-b.png"
+              collapsed ? "/web-app-manifest-512x512.png" : "/imgs/logo-w.png"
             }
             alt="logo"
             width={160}
@@ -187,12 +187,9 @@ export default function AdminShell({ children }) {
             )}
           />
           {!collapsed && (
-            <div className="mt-2 flex flex-col gap-1">
-              <p className="text-sm font-semibold text-primary-600">
-                Admin Panel
-              </p>
-              <p className="text-xs text-neutral-500">Content suite</p>
-            </div>
+            <p className="mt-3 text-sm font-medium rounded-full px-3 py-px bg-white inline-block relative">
+              Admin Panel
+            </p>
           )}
         </div>
 
@@ -220,7 +217,6 @@ export default function AdminShell({ children }) {
         </div>
       </aside>
 
-      {/* Main content */}
       <div
         className={classNames(
           "flex h-full flex-1 min-w-0 flex-col bg-neutral-50 transition-[margin] duration-300",

@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import {
   FaClock,
   FaEye,
@@ -44,14 +45,12 @@ export default function EditBlogForm({ initial }) {
   const [content, setContent] = useState(initial?.content || "");
   const [published, setPublished] = useState(Boolean(initial?.published));
   const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState(null);
 
   const slugPreview = slugify(title);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setFeedback(null);
     try {
       let nextCover = coverUrl;
       if (coverFile) {
@@ -87,22 +86,13 @@ export default function EditBlogForm({ initial }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to save changes");
 
-      setFeedback({
-        type: "success",
-        text: "Changes saved successfully.",
-      });
+      toast.success("Changes saved successfully.");
       setCoverUrl(nextCover);
       setCoverFile(null);
       setDropzoneKey((key) => key + 1);
-
-      if (data?.slug && data.slug !== initial.slug) {
-        router.replace(`/admin/edit/${encodeURIComponent(data.slug)}`);
-      }
+      router.push("/admin/blogs");
     } catch (err) {
-      setFeedback({
-        type: "error",
-        text: err.message || "Failed to save changes",
-      });
+      toast.error(err.message || "Failed to save changes");
     } finally {
       setLoading(false);
     }
@@ -297,20 +287,6 @@ export default function EditBlogForm({ initial }) {
               </label>
             </div>
           </div>
-
-          {feedback && (
-            <div
-              className={classNames(
-                "flex items-center gap-2 rounded-xl border px-4 py-3 text-sm",
-                feedback.type === "success"
-                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                  : "border-red-200 bg-red-50 text-red-600"
-              )}
-            >
-              <FaInfoCircle />
-              <span>{feedback.text}</span>
-            </div>
-          )}
 
           <div className="flex flex-wrap items-center gap-3">
             <button

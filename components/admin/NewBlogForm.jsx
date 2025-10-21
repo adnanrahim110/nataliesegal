@@ -2,7 +2,9 @@
 
 import Dropzone from "@/components/ui/Dropzone";
 import TinyMCEEditor from "@/components/admin/TinyMCEEditor";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import {
   FaClock,
   FaImage,
@@ -26,6 +28,7 @@ function slugify(input) {
 }
 
 export default function NewBlogForm() {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [coverFile, setCoverFile] = useState(null);
@@ -36,14 +39,12 @@ export default function NewBlogForm() {
   const [content, setContent] = useState("");
   const [published, setPublished] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState(null);
 
   const slugPreview = slugify(title);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setFeedback(null);
     try {
       let coverUrl = "";
       if (coverFile) {
@@ -80,12 +81,11 @@ export default function NewBlogForm() {
         throw new Error(data?.error || "Failed to create blog");
       }
 
-      setFeedback({
-        type: "success",
-        text: slugPreview
+      toast.success(
+        slugPreview
           ? `Blog created! View it at /blogs/${slugPreview}`
-          : "Blog created!",
-      });
+          : "Blog created!"
+      );
       setTitle("");
       setExcerpt("");
       setCoverFile(null);
@@ -95,11 +95,9 @@ export default function NewBlogForm() {
       setReadTime("");
       setContent("");
       setPublished(true);
+      router.push("/admin/blogs");
     } catch (err) {
-      setFeedback({
-        type: "error",
-        text: err?.message || "Failed to create blog",
-      });
+      toast.error(err?.message || "Failed to create blog");
     } finally {
       setLoading(false);
     }
@@ -286,20 +284,6 @@ export default function NewBlogForm() {
               </label>
             </div>
           </div>
-
-          {feedback ? (
-            <div
-              className={classNames(
-                "flex items-center gap-2 rounded-xl border px-4 py-3 text-sm",
-                feedback.type === "success"
-                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                  : "border-red-200 bg-red-50 text-red-600"
-              )}
-            >
-              <FaInfoCircle />
-              <span>{feedback.text}</span>
-            </div>
-          ) : null}
 
           <button
             type="submit"

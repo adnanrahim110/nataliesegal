@@ -217,7 +217,7 @@ export default async function BlogDetailPage({ params }) {
                   priority
                 />
               </div>
-              <div className="prose prose-neutral mx-auto max-w-3xl px-6 pb-12 pt-6 md:px-10">
+              <div className="prose prose-neutral px-6 pb-12 pt-6 md:px-10">
                 <div dangerouslySetInnerHTML={{ __html: post.content }} />
               </div>
             </article>

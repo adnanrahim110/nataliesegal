@@ -56,7 +56,9 @@ export default function BlogsList() {
 
         <div className="mt-10 grid gap-6 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
           {loading && (
-            <div className="col-span-full text-neutral-600">Loading blogs...</div>
+            <div className="col-span-full text-neutral-600">
+              Loading blogs...
+            </div>
           )}
           {error && !loading && (
             <div className="col-span-full text-red-600 text-sm">{error}</div>
@@ -64,13 +66,15 @@ export default function BlogsList() {
           {!loading && !error && posts.length === 0 && (
             <div className="col-span-full text-neutral-600">No blogs yet.</div>
           )}
-          {!loading && !error && posts.map((post, idx) => (
-            <BlogCard
-              key={post.id}
-              post={{ ...post, href: `/blogs/${post.slug}` }}
-              delay={0.05 * (idx % 3)}
-            />
-          ))}
+          {!loading &&
+            !error &&
+            posts.map((post, idx) => (
+              <BlogCard
+                key={post.id}
+                post={{ ...post, href: `/blogs/${post.slug}` }}
+                delay={0.05 * (idx % 3)}
+              />
+            ))}
         </div>
       </div>
     </motion.section>

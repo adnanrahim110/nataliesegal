@@ -2,13 +2,13 @@
 
 import PasswordInput from "@/components/ui/PasswordInput";
 import clsx from "clsx";
+import { UserLock } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   FaArrowLeft,
   FaCheckCircle,
-  FaEnvelopeOpenText,
   FaLock,
   FaShieldAlt,
   FaTimes,
@@ -33,6 +33,8 @@ export default function AdminLoginPage() {
   const [forgotSubmitError, setForgotSubmitError] = useState("");
   const [forgotSubmitSuccess, setForgotSubmitSuccess] = useState("");
   const [forgotResetUrl, setForgotResetUrl] = useState("");
+  const [forgotLastSentAt, setForgotLastSentAt] = useState(null);
+  const [forgotTimerTick, setForgotTimerTick] = useState(Date.now());
 
   useEffect(() => {
     const savedRemember = localStorage.getItem("adminRemember");
@@ -48,6 +50,27 @@ export default function AdminLoginPage() {
       setRemember(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!forgotOpen || !forgotLastSentAt) return;
+    const interval = setInterval(() => {
+      setForgotTimerTick(Date.now());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [forgotOpen, forgotLastSentAt]);
+
+  const resendCooldownMs = forgotLastSentAt
+    ? Math.max(0, 30_000 - (forgotTimerTick - forgotLastSentAt))
+    : 0;
+  const resendSeconds = Math.max(0, Math.ceil(resendCooldownMs / 1000));
+  const forgotButtonLabel = forgotLastSentAt
+    ? "Resend reset link"
+    : "Send reset link";
+  const forgotButtonDisabled =
+    forgotSubmitting ||
+    resendCooldownMs > 0 ||
+    !!forgotEmailError ||
+    !forgotEmail;
 
   const validateEmail = (value) => {
     if (!value.trim()) return "Email is required";
@@ -84,12 +107,16 @@ export default function AdminLoginPage() {
     setForgotSubmitError("");
     setForgotSubmitSuccess("");
     setForgotResetUrl("");
+    setForgotLastSentAt(null);
+    setForgotTimerTick(Date.now());
   };
 
   const closeForgot = () => {
     setForgotOpen(false);
     setForgotSubmitting(false);
     setForgotSubmitError("");
+    setForgotLastSentAt(null);
+    setForgotTimerTick(Date.now());
   };
 
   const handleForgotEmailChange = (e) => {
@@ -100,6 +127,8 @@ export default function AdminLoginPage() {
     setForgotSubmitError("");
     setForgotSubmitSuccess("");
     setForgotResetUrl("");
+    setForgotLastSentAt(null);
+    setForgotTimerTick(Date.now());
   };
 
   const handleForgotSubmit = async (e) => {
@@ -112,6 +141,15 @@ export default function AdminLoginPage() {
     const validation = validateEmail(forgotEmail);
     setForgotEmailError(validation);
     if (validation) return;
+
+    const now = Date.now();
+    if (forgotLastSentAt && now - forgotLastSentAt < 30_000) {
+      const waitSeconds = Math.ceil((30_000 - (now - forgotLastSentAt)) / 1000);
+      setForgotSubmitError(
+        `Please wait ${waitSeconds}s before requesting another reset email.`
+      );
+      return;
+    }
 
     setForgotSubmitting(true);
     try {
@@ -129,7 +167,12 @@ export default function AdminLoginPage() {
       if (!res.ok) {
         throw new Error(data?.error || "Could not send reset link");
       }
-      setForgotSubmitSuccess("If that email is registered, a reset link is on its way.");
+      setForgotSubmitSuccess(
+        "If that email is registered, a reset link is on its way. The link expires in 60 minutes."
+      );
+      const sentAt = Date.now();
+      setForgotLastSentAt(sentAt);
+      setForgotTimerTick(sentAt);
       if (typeof data?.resetUrl === "string") {
         setForgotResetUrl(data.resetUrl);
       }
@@ -188,7 +231,8 @@ export default function AdminLoginPage() {
             Welcome back, admin
           </h1>
           <p className="mt-4 text-base text-neutral-600 sm:text-lg">
-            Sign in to manage content, review analytics, and keep your publication running smoothly.
+            Sign in to manage content, review analytics, and keep your
+            publication running smoothly.
           </p>
           <ul className="mt-6 space-y-3 text-sm text-neutral-600">
             {[
@@ -221,7 +265,9 @@ export default function AdminLoginPage() {
 
             <form onSubmit={onSubmit} className="space-y-5 px-6 py-8">
               <div className="space-y-1">
-                <label className="text-sm font-medium text-neutral-700">Email</label>
+                <label className="text-sm font-medium text-neutral-700">
+                  Email
+                </label>
                 <input
                   type="email"
                   value={email}
@@ -241,7 +287,9 @@ export default function AdminLoginPage() {
                   required
                 />
                 {emailError ? (
-                  <p className="text-xs font-medium text-red-600">{emailError}</p>
+                  <p className="text-xs font-medium text-red-600">
+                    {emailError}
+                  </p>
                 ) : emailTouched && email ? (
                   <p className="flex items-center gap-1 text-xs font-medium text-emerald-600">
                     <FaCheckCircle /> Looks good
@@ -250,7 +298,9 @@ export default function AdminLoginPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-medium text-neutral-700">Password</label>
+                <label className="text-sm font-medium text-neutral-700">
+                  Password
+                </label>
                 <PasswordInput
                   value={password}
                   onChange={handlePasswordChange}
@@ -269,7 +319,9 @@ export default function AdminLoginPage() {
                   required
                 />
                 {passwordError ? (
-                  <p className="text-xs font-medium text-red-600">{passwordError}</p>
+                  <p className="text-xs font-medium text-red-600">
+                    {passwordError}
+                  </p>
                 ) : passwordTouched && password ? (
                   <p className="flex items-center gap-1 text-xs font-medium text-emerald-600">
                     <FaCheckCircle /> Looks secure
@@ -292,7 +344,9 @@ export default function AdminLoginPage() {
                     }}
                     className="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                   />
-                  <span className="font-medium text-neutral-600">Remember this device</span>
+                  <span className="font-medium text-neutral-600">
+                    Remember this device
+                  </span>
                 </label>
                 <button
                   type="button"
@@ -351,13 +405,20 @@ export default function AdminLoginPage() {
               <FaTimes className="h-4 w-4" />
             </button>
 
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-50 text-primary-600">
-              <FaEnvelopeOpenText className="h-6 w-6" />
+            <div className="flex items-center justify-start gap-2">
+              <div className="flex shrink-0 p-3 items-center justify-center rounded-full bg-primary-50 text-primary-600">
+                <UserLock className="size-10" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-neutral-900">
+                  Reset password
+                </h2>
+                <p className="mt-1 text-xs text-neutral-600">
+                  Enter your admin email address and we&apos;ll send you a
+                  secure password reset link.
+                </p>
+              </div>
             </div>
-            <h2 className="mt-4 text-xl font-semibold text-neutral-900">Reset password</h2>
-            <p className="mt-2 text-sm text-neutral-600">
-              Enter your admin email address and we&apos;ll send you a secure password reset link.
-            </p>
 
             <form onSubmit={handleForgotSubmit} className="mt-6 space-y-4">
               <div className="space-y-1">
@@ -386,7 +447,9 @@ export default function AdminLoginPage() {
                   required
                 />
                 {forgotEmailError ? (
-                  <p className="text-xs font-medium text-red-600">{forgotEmailError}</p>
+                  <p className="text-xs font-medium text-red-600">
+                    {forgotEmailError}
+                  </p>
                 ) : forgotTouched && forgotEmail ? (
                   <p className="flex items-center gap-1 text-xs font-medium text-emerald-600">
                     <FaCheckCircle /> Looks good
@@ -403,8 +466,9 @@ export default function AdminLoginPage() {
 
               {forgotSubmitSuccess ? (
                 <div className="space-y-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs text-emerald-700">
-                  <div className="flex items-center gap-2 font-semibold">
-                    <FaCheckCircle className="text-emerald-500" /> {forgotSubmitSuccess}
+                  <div className="flex items-center gap-2 font-medium">
+                    <FaCheckCircle className="text-emerald-500" />{" "}
+                    {forgotSubmitSuccess}
                   </div>
                   {forgotResetUrl ? (
                     <div className="break-all rounded-lg bg-white/70 px-3 py-2 font-mono text-[11px] text-emerald-700">
@@ -425,7 +489,7 @@ export default function AdminLoginPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={forgotSubmitting}
+                  disabled={forgotButtonDisabled}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neutral-900 px-4 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                 >
                   {forgotSubmitting ? (
@@ -435,11 +499,15 @@ export default function AdminLoginPage() {
                     </>
                   ) : (
                     <>
-                      <FaLock /> Send reset link
+                      <FaLock /> {forgotButtonLabel}
+                      {resendCooldownMs > 0 ? ` (${resendSeconds}s)` : ""}
                     </>
                   )}
                 </button>
               </div>
+              <p className="mt-1 text-center text-xs text-neutral-500">
+                Reset link expires in 60 minutes.
+              </p>
             </form>
           </div>
         </div>
@@ -447,4 +515,3 @@ export default function AdminLoginPage() {
     </div>
   );
 }
-

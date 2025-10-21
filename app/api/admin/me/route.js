@@ -22,9 +22,16 @@ export async function PATCH(req) {
   const sess = await getSessionWithUser(token);
   if (!sess) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await req.json();
-  const name = body?.name || null;
-  const email = body?.email || null;
+  const name = body?.name ? String(body.name).trim() : null;
+  const email = body?.email ? String(body.email).trim() : null;
   if (!name || !email) return NextResponse.json({ error: "name and email required" }, { status: 400 });
+  const currentEmail = (sess.user.email || "").toLowerCase();
+  if (email.toLowerCase() !== currentEmail) {
+    return NextResponse.json(
+      { error: "Verify the email change before saving your profile." },
+      { status: 400 }
+    );
+  }
   try {
     await maybeAddAvatarColumn();
     await query(`UPDATE users SET name = ?, email = ? WHERE id = ?`, [name, email, sess.user.id]);
@@ -43,4 +50,3 @@ async function maybeAddAvatarColumn() {
     }
   } catch {}
 }
-

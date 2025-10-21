@@ -16,6 +16,8 @@
   --color-primary-800: #184d3e;
   --color-primary-900: #12372d;
   --color-primary-950: #0b231e;
+
+  --animate-fadeInUp: 'fadeInUp 0.2s ease-out forwards'
 }
 
 @layer base {
@@ -38,6 +40,26 @@
   :is(h1, h2, h3, h4, h5, h6) {
     @apply font-bold font-noticia leading-tight;
   }
+
+  textarea {
+    @apply resize-none;
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.3s ease-out forwards;
 }
 
 @layer utilities {

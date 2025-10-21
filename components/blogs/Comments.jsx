@@ -1,8 +1,8 @@
 "use client";
 
 import Button from "@/components/ui/Button";
-import { useEffect, useMemo, useState } from "react";
 import { MessageCircle, Sparkles } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 function formatDate(iso) {
   try {
@@ -58,7 +58,9 @@ export default function Comments({ slug, onCountChange }) {
       setLoading(true);
       setLoadError("");
       try {
-        const res = await fetch(`/api/blogs/${slug}/comments`, { cache: "no-store" });
+        const res = await fetch(`/api/blogs/${slug}/comments`, {
+          cache: "no-store",
+        });
         const data = await res.json();
         if (!res.ok) throw new Error(data?.error || "Failed to load comments");
         if (cancelled) return;
@@ -138,7 +140,7 @@ export default function Comments({ slug, onCountChange }) {
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary-600">
                 Community
               </p>
-              <h3 className="font-noticia text-2xl text-neutral-900 md:text-[28px]">
+              <h3 className="font-noticia text-xl text-neutral-900 md:text-2xl">
                 Join the conversation
               </h3>
             </div>
@@ -148,8 +150,8 @@ export default function Comments({ slug, onCountChange }) {
           </div>
         </div>
         <p className="relative mt-3 max-w-2xl text-sm text-neutral-600">
-          Share your reflections, highlight favorite lines, or continue the thread. Thoughtful,
-          respectful dialogue keeps the story alive.
+          Share your reflections, highlight favorite lines, or continue the
+          thread. Thoughtful, respectful dialogue keeps the story alive.
         </p>
       </header>
 
@@ -180,7 +182,9 @@ export default function Comments({ slug, onCountChange }) {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="font-semibold text-neutral-900">{c.name}</div>
+                    <div className="font-semibold text-neutral-900">
+                      {c.name}
+                    </div>
                     <div className="text-xs uppercase tracking-[0.24em] text-neutral-400">
                       {formatDate(c.createdAt)}
                     </div>
@@ -195,7 +199,8 @@ export default function Comments({ slug, onCountChange }) {
         </ul>
       ) : (
         <div className="rounded-3xl border border-dashed border-neutral-300 bg-white/90 px-6 py-10 text-center text-sm text-neutral-500 shadow-sm">
-          Be the first to respond — your perspective could spark the next insight.
+          Be the first to respond — your perspective could spark the next
+          insight.
         </div>
       )}
 
@@ -205,8 +210,8 @@ export default function Comments({ slug, onCountChange }) {
           className="rounded-[calc(1.5rem-1px)] bg-white/95 px-6 py-6 shadow-inner shadow-white/40 backdrop-blur-sm md:px-8 md:py-8"
           noValidate
         >
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="md:col-span-1">
+          <div className="grid gap-4">
+            <div>
               <label
                 htmlFor="c-name"
                 className="mb-2 block text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500"
@@ -222,7 +227,7 @@ export default function Comments({ slug, onCountChange }) {
                 className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-primary-400 focus:ring-2 focus:ring-primary-200"
               />
             </div>
-            <div className="md:col-span-2">
+            <div>
               <label
                 htmlFor="c-message"
                 className="mb-2 block text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500"
@@ -239,12 +244,13 @@ export default function Comments({ slug, onCountChange }) {
                   maxLength={maxLen}
                   aria-invalid={!isValid}
                   aria-describedby="c-message-help c-message-err"
-                  className="min-h-32 w-full resize-y rounded-2xl bg-transparent px-4 py-3 text-sm text-neutral-700 outline-none transition focus:border-primary-300 focus:ring-2 focus:ring-primary-200"
+                  className="min-h-32 w-full rounded-2xl bg-transparent px-4 py-3 text-sm text-neutral-700 outline-none transition focus:border-primary-300 focus:ring-2 focus:ring-primary-200"
                 />
               </div>
               <div className="mt-2 flex flex-wrap items-center justify-between gap-3 text-xs text-neutral-500">
-            <span id="c-message-help" className="flex items-center gap-1">
-                  <Sparkles className="h-4 w-4 text-primary-500" /> Keep it thoughtful and kind.
+                <span id="c-message-help" className="flex items-center gap-1">
+                  <Sparkles className="h-4 w-4 text-primary-500" /> Keep it
+                  thoughtful and kind.
                 </span>
                 <span>
                   {trimmedMessage.length}/{maxLen}

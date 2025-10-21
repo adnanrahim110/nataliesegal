@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
-import { getPool, query } from "@/lib/db";
 import { createSession, verifyPassword } from "@/lib/auth";
+import { getPool, query } from "@/lib/db";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    await getPool(); // ensure pool can initialize
+    await getPool();
     const body = await req.json();
     const { email, password, remember } = body || {};
     if (!email || !password)
@@ -25,7 +25,7 @@ export async function POST(req) {
 
     const ua = req.headers.get("user-agent") || null;
     const ip = req.headers.get("x-forwarded-for") || null;
-    const maxAgeDays = remember ? 7 : 1; // persist longer if remembered
+    const maxAgeDays = remember ? 7 : 1;
     const token = await createSession(user.id, ua, ip, maxAgeDays);
 
     const res = NextResponse.json({
@@ -41,9 +41,8 @@ export async function POST(req) {
       secure: isProd,
     };
     if (remember) {
-      cookieOptions.maxAge = 7 * 24 * 60 * 60; // 7 days
+      cookieOptions.maxAge = 7 * 24 * 60 * 60;
     }
-    // If not remember, omit maxAge -> session cookie (cleared on close)
     res.cookies.set(cookieOptions);
     return res;
   } catch (err) {

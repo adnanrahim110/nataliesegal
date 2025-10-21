@@ -1,5 +1,6 @@
 import { Mr_De_Haviland, Noticia_Text, Questrial } from "next/font/google";
 import "./globals.css";
+import ToasterProvider from "@/components/ui/ToasterProvider";
 
 const questrial = Questrial({
   variable: "--font-questrial",
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${questrial.variable} ${noticiaText.variable} ${mrDeHaviland.variable} antialiased`}
       >
+        <ToasterProvider />
         {children}
       </body>
     </html>
