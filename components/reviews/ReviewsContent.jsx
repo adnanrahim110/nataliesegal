@@ -62,9 +62,9 @@ export default function ReviewsContent() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="relative overflow-hidden bg-gradient-to-b from-neutral-50/60 to-white"
+      className="relative overflow-hidden bg-linear-to-b from-neutral-50/60 to-white"
     >
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-neutral-200/60 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-neutral-200/60 to-transparent" />
       <div className="container py-16 md:py-24">
         <div className="space-y-4 text-center mb-16">
           <SectionSubtitle align="center">What Readers Say</SectionSubtitle>
@@ -96,13 +96,13 @@ export default function ReviewsContent() {
               }}
               className="group relative"
             >
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-primary-300/50 via-amber-200/30 to-primary-200/40 opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute -inset-px rounded-2xl bg-linear-to-br from-primary-300/50 via-amber-200/30 to-primary-200/40 opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative rounded-2xl bg-white/90 p-8 shadow-sm ring-1 ring-black/5 backdrop-blur-sm h-full overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-100/40 to-transparent rounded-full blur-2xl -translate-y-16 translate-x-16" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-primary-100/40 to-transparent rounded-full blur-2xl -translate-y-16 translate-x-16" />
 
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-6">
-                    <div className="p-3 rounded-xl bg-gradient-to-br from-primary-100 to-primary-50 ring-1 ring-primary-200/50">
+                    <div className="p-3 rounded-xl bg-linear-to-br from-primary-100 to-primary-50 ring-1 ring-primary-200/50">
                       <FaQuoteLeft className="text-primary-600 text-xl" />
                     </div>
                     <div className="flex items-center gap-1">
@@ -118,11 +118,11 @@ export default function ReviewsContent() {
                   </blockquote>
 
                   <footer className="relative">
-                    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-neutral-300/60 to-transparent" />
+                    <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-neutral-300/60 to-transparent" />
                     <div className="pt-6 flex items-center gap-4">
                       <div className="relative">
-                        <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary-200 to-amber-200 opacity-60" />
-                        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary-600 to-primary-700 text-white font-bold text-sm shadow-lg">
+                        <div className="absolute -inset-1 rounded-full bg-linear-to-br from-primary-200 to-amber-200 opacity-60" />
+                        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-primary-600 to-primary-700 text-white font-bold text-sm shadow-lg">
                           {review.author
                             .split(" ")
                             .map((n) => n[0])
@@ -164,7 +164,7 @@ export default function ReviewsContent() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
-                href="https://amazon.com"
+                href="https://amazon.com/dp/B0FTTHB1D2"
                 target="_blank"
                 className="px-6 py-3"
                 contentClassName="font-serif flex items-center gap-2"

@@ -14,9 +14,9 @@ export default function BookContent() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="relative overflow-hidden bg-gradient-to-b from-neutral-50/60 to-white"
+      className="relative overflow-hidden bg-linear-to-b from-neutral-50/60 to-white"
     >
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-neutral-200/60 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-neutral-200/60 to-transparent" />
       <div className="container py-16 md:py-24">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-10 items-center">
           <motion.div
@@ -27,7 +27,7 @@ export default function BookContent() {
             className="relative order-2 lg:order-1"
           >
             <div className="relative max-w-md mx-auto lg:max-w-none">
-              <div className="absolute -inset-4 bg-gradient-to-br from-primary-200/40 via-transparent to-amber-100/30 rounded-3xl blur-2xl" />
+              <div className="absolute -inset-4 bg-linear-to-br from-primary-200/40 via-transparent to-amber-100/30 rounded-3xl blur-2xl" />
               <div className="relative overflow-hidden shadow-2xl ring-1 ring-black/10">
                 <Image
                   src="/imgs/book.png"
@@ -85,7 +85,7 @@ export default function BookContent() {
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button
                 as={Link}
-                href="https://amazon.com"
+                href="https://amazon.com/dp/B0FTTHB1D2"
                 tone="dark"
                 className="px-8 py-3"
                 contentClassName="font-serif text-base"
@@ -103,7 +103,6 @@ export default function BookContent() {
               </Button>
             </div>
 
-            {/* Book Details */}
             <div className="pt-6 border-t border-neutral-200/60">
               <dl className="grid grid-cols-2 gap-4 text-sm">
                 <div>

@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import {
   FaEnvelope,
+  FaFacebookF,
   FaInstagram,
   FaLinkedin,
   FaMapMarkerAlt,
@@ -64,9 +65,17 @@ export default function ContactContent() {
   ];
 
   const socialLinks = [
-    { icon: FaTwitter, href: "https://twitter.com", label: "Twitter" },
-    { icon: FaInstagram, href: "https://instagram.com", label: "Instagram" },
-    { icon: FaLinkedin, href: "https://linkedin.com", label: "LinkedIn" },
+    {
+      icon: FaFacebookF,
+      href: "https://www.facebook.com/profile.php?id=61579619503628",
+      label: "Facebook",
+    },
+    {
+      icon: FaInstagram,
+      href: "https://www.instagram.com/nnataliedeesegal/",
+      label: "Instagram",
+    },
+    { icon: FaLinkedin, href: "#", label: "LinkedIn" },
   ];
 
   return (

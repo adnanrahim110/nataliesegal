@@ -1,0 +1,23 @@
+services:
+  natalie:
+    image: ghcr.io/OWNER/REPO:latest
+    env_file: .env
+    networks:
+      - proxy
+      - internal
+    volumes:
+      - ./uploads:/app/public/uploads
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.natalie.rule=Host(`natalie-segal.com`)
+      - traefik.http.routers.natalie.entrypoints=websecure
+      - traefik.http.routers.natalie.tls.certresolver=le
+      - traefik.http.services.natalie.loadbalancer.server.port=3000
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true
+  internal:
+    external: true
+

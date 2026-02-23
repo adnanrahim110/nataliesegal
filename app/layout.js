@@ -1,6 +1,6 @@
+import ToasterProvider from "@/components/ui/ToasterProvider";
 import { Mr_De_Haviland, Noticia_Text, Questrial } from "next/font/google";
 import "./globals.css";
-import ToasterProvider from "@/components/ui/ToasterProvider";
 
 const questrial = Questrial({
   variable: "--font-questrial",

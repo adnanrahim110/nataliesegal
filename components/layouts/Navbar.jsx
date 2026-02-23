@@ -9,7 +9,7 @@ import Button from "../ui/Button";
 const Navbar = () => {
   const pathname = usePathname();
   return (
-    <header className={cn("w-full top-0 z-[100] py-2.5")}>
+    <header className={cn("w-full top-0 z-100 py-2.5")}>
       <div className="container">
         <nav className="flex items-center justify-between">
           <div>
@@ -33,7 +33,7 @@ const Navbar = () => {
                     "before:absolute before:bottom-0 before:left-0 before:h-px before:transition-all before:duration-300",
                     pathname === navLink.href
                       ? "text-primary-600 before:w-full before:bg-primary-600"
-                      : "text-black before:w-0 hover:before:w-full hover:before:bg-black"
+                      : "text-black before:w-0 hover:before:w-full hover:before:bg-black",
                   )}
                 >
                   {navLink.name}
@@ -42,7 +42,9 @@ const Navbar = () => {
             ))}
           </ul>
           <div>
-            <Button>Buy Now</Button>
+            <Button href="https://amazon.com/dp/B0FTTHB1D2" target="_blank">
+              Buy Now
+            </Button>
           </div>
         </nav>
       </div>

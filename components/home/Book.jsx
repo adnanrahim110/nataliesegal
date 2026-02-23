@@ -13,7 +13,7 @@ const Book = () => {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="relative bg-gradient-to-b from-white via-primary-50/40 bg-white"
+      className="relative bg-linear-to-b from-white via-primary-50/40 bg-white"
     >
       <div className="container py-16 md:py-24">
         <div className="grid items-center gap-12 md:gap-16 md:grid-cols-2">
@@ -54,7 +54,10 @@ const Book = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <Button href="/contact">Buy Now</Button>
+              <Button tone="dark" href="/book">
+                Read More
+              </Button>
+              <Button href="/https://amazon.com/dp/B0FTTHB1D2">Buy Now</Button>
             </div>
           </div>
         </div>

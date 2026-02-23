@@ -6,24 +6,24 @@ import Link from "next/link";
 import React from "react";
 import {
   FaEnvelope,
+  FaFacebookF,
   FaInstagram,
   FaLinkedin,
   FaMapMarkerAlt,
   FaTwitter,
-  FaYoutube,
 } from "react-icons/fa";
 
 const socials = [
   {
-    name: "Twitter",
-    href: "#",
-    Icon: FaTwitter,
+    name: "Facebook",
+    href: "https://www.facebook.com/profile.php?id=61579619503628",
+    Icon: FaFacebookF,
     hover:
-      "hover:text-[#1DA1F2] hover:border-[#1DA1F2]/50 hover:bg-[#1DA1F2]/10",
+      "hover:text-[#1877F2] hover:border-[#1877F2]/50 hover:bg-[#1877F2]/10",
   },
   {
     name: "Instagram",
-    href: "#",
+    href: "https://www.instagram.com/nnataliedeesegal/",
     Icon: FaInstagram,
     hover:
       "hover:text-[#E4405F] hover:border-[#E4405F]/50 hover:bg-[#E4405F]/10",
@@ -34,13 +34,6 @@ const socials = [
     Icon: FaLinkedin,
     hover:
       "hover:text-[#0A66C2] hover:border-[#0A66C2]/50 hover:bg-[#0A66C2]/10",
-  },
-  {
-    name: "YouTube",
-    href: "#",
-    Icon: FaYoutube,
-    hover:
-      "hover:text-[#FF0000] hover:border-[#FF0000]/50 hover:bg-[#FF0000]/10",
   },
 ];
 
@@ -126,6 +119,7 @@ const Footer = () => {
                     key={idx}
                     href={href}
                     aria-label={name}
+                    target="_blank"
                     className={`inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-neutral-300 transition will-change-transform hover:scale-110 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 ${hover}`}
                   >
                     <Icon className="h-4 w-4" />

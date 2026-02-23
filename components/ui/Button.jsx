@@ -20,16 +20,16 @@ const Button = ({
     <Tag
       {...(href ? { href, target } : { onClick, type, disabled })}
       className={cn(
-        "cursor-pointer font-semibold overflow-hidden relative z-100 border group px-8 py-2",
+        "cursor-pointer inline-block font-semibold overflow-hidden relative z-100 border group px-8 py-2",
         tone === "dark" ? "border-black" : "border-primary-500",
-        className
+        className,
       )}
     >
       <span
         className={cn(
           "relative z-10 font-noticia group-hover:text-white duration-500",
           tone === "dark" ? "text-black" : "text-primary-600",
-          contentClassName
+          contentClassName,
         )}
       >
         {children}
@@ -37,13 +37,13 @@ const Button = ({
       <span
         className={cn(
           "absolute w-full h-full -left-32 top-0 -rotate-45 group-hover:rotate-0 group-hover:left-0 duration-500",
-          tone === "dark" ? "bg-black" : "bg-primary-500"
+          tone === "dark" ? "bg-black" : "bg-primary-500",
         )}
       ></span>
       <span
         className={cn(
           "absolute w-full h-full -right-32 top-0 -rotate-45 group-hover:rotate-0 group-hover:right-0 duration-500",
-          tone === "dark" ? "bg-black" : "bg-primary-500"
+          tone === "dark" ? "bg-black" : "bg-primary-500",
         )}
       ></span>
     </Tag>

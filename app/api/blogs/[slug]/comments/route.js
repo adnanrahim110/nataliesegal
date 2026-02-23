@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { getPool, query } from "@/lib/db";
+import { NextResponse } from "next/server";
 
 function toIso(value) {
   if (!value) return new Date().toISOString();
@@ -13,7 +13,8 @@ function toIso(value) {
 export async function GET(_req, { params }) {
   try {
     await getPool();
-    const slug = params?.slug;
+    const paramsData = await params;
+    const slug = paramsData?.slug;
     if (!slug) {
       return NextResponse.json({ error: "Missing slug" }, { status: 400 });
     }
@@ -44,7 +45,8 @@ export async function GET(_req, { params }) {
 export async function POST(req, { params }) {
   try {
     await getPool();
-    const slug = params?.slug;
+    const paramsData = await params;
+    const slug = paramsData?.slug;
     if (!slug) {
       return NextResponse.json({ error: "Missing slug" }, { status: 400 });
     }
@@ -91,17 +93,17 @@ export async function POST(req, { params }) {
 
     const comment = insertedRow
       ? {
-          id: insertedRow.id,
-          name: insertedRow.name || name,
-          message: insertedRow.message || message,
-          createdAt: toIso(insertedRow.created_at),
-        }
+        id: insertedRow.id,
+        name: insertedRow.name || name,
+        message: insertedRow.message || message,
+        createdAt: toIso(insertedRow.created_at),
+      }
       : {
-          id: insertedId || Date.now(),
-          name,
-          message,
-          createdAt: new Date().toISOString(),
-        };
+        id: insertedId || Date.now(),
+        name,
+        message,
+        createdAt: new Date().toISOString(),
+      };
 
     const [{ count }] = await query(
       `SELECT COUNT(*) AS count FROM blog_comments WHERE blog_id = ?`,

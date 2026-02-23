@@ -14,7 +14,7 @@ const Cta = () => {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="relative bg-[radial-gradient(80%_80%_at_10%_0%,_rgba(134,239,172,0.25),_transparent_60%),radial-gradient(80%_80%_at_100%_100%,_rgba(134,239,172,0.18),_transparent_60%)]"
+      className="relative bg-[radial-gradient(80%_80%_at_10%_0%,rgba(134,239,172,0.25),transparent_60%),radial-gradient(80%_80%_at_100%_100%,rgba(134,239,172,0.18),transparent_60%)]"
     >
       <div className="container py-16 md:py-28">
         <motion.div
@@ -32,9 +32,9 @@ const Cta = () => {
               hidden: { opacity: 0, y: 20 },
               show: { opacity: 1, y: 0 },
             }}
-            className="relative w-full max-w-[18rem] sm:max-w-[20rem] md:max-w-[22rem] lg:max-w-[30rem] mx-auto"
+            className="relative w-full max-w-[18rem] sm:max-w-[20rem] md:max-w-88 lg:max-w-120 mx-auto"
           >
-            <div className="pointer-events-none absolute -inset-6 bg-gradient-to-tr from-primary-300/50 via-primary-500/30 to-primary-300/20 blur-2xl" />
+            <div className="pointer-events-none absolute -inset-6 bg-linear-to-tr from-primary-300/50 via-primary-500/30 to-primary-300/20 blur-2xl" />
             <div className="relative">
               <Image
                 src="/imgs/book-mockup.png"
@@ -70,7 +70,7 @@ const Cta = () => {
               </p>
               <div className="pt-2">
                 <Button
-                  href="https://www.amazon.com/"
+                  href="https://amazon.com/dp/B0FTTHB1D2"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex"
