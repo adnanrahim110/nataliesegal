@@ -23,7 +23,7 @@
 # misc
 .DS_Store
 *.pem
-# *.sql
+*.sql
 
 # allow versioned schema (keeps dumps ignored)
 !sql/schema.sql
@@ -45,3 +45,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+DEPLOYMENT.md

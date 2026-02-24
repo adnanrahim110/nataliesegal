@@ -843,7 +843,7 @@ For each new website:
 sudo mkdir -p /srv/apps/<site>/uploads
 ```
 
-2. Create DB + user (Section 6) with a new `DB_NAME`, `DB_USER`, `DB_PASS`.
+2. Create DB + user (Section 6) with a new `DB_NAME`, `DB_USER`, `DB_PASSWORD`.
 3. Apply schema (Section 7) for that DB.
 4. Create `/srv/apps/<site>/.env` and `/srv/apps/<site>/docker-compose.yml` (copy the `natalie` pattern).
 5. Start it:
