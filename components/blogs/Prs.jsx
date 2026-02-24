@@ -51,8 +51,8 @@ const Prs = () => {
               </SwiperSlide>
             ))}
           </Swiper>
-          <div className="absolute top-0 -left-1 h-full w-16 z-[2] bg-linear-to-r from-primary-50 via-primary-50 to-transparent pointer-events-none" />
-          <div className="absolute top-0 -right-1 h-full w-16 z-[2] bg-linear-to-l from-primary-50 via-primary-50 to-transparent pointer-events-none" />
+          <div className="absolute top-0 -left-1 h-full w-16 z-2 bg-linear-to-r from-primary-50 via-primary-50 to-transparent pointer-events-none" />
+          <div className="absolute top-0 -right-1 h-full w-16 z-2 bg-linear-to-l from-primary-50 via-primary-50 to-transparent pointer-events-none" />
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 services:
   natalie:
-    image: ghcr.io/OWNER/REPO:latest
+    image: ${APP_IMAGE}
     env_file: .env
     networks:
       - proxy
@@ -20,4 +20,3 @@ networks:
     external: true
   internal:
     external: true
-
