@@ -13,6 +13,15 @@ services:
       - traefik.http.routers.natalie.entrypoints=websecure
       - traefik.http.routers.natalie.tls.certresolver=le
       - traefik.http.services.natalie.loadbalancer.server.port=3000
+
+      - traefik.http.routers.natalie-www.rule=Host(`www.natalie-segal.com`)
+      - traefik.http.routers.natalie-www.entrypoints=websecure
+      - traefik.http.routers.natalie-www.tls.certresolver=le
+      - traefik.http.routers.natalie-www.service=natalie
+      - traefik.http.routers.natalie-www.middlewares=natalie-www-redirect
+      - traefik.http.middlewares.natalie-www-redirect.redirectregex.regex=^https?://www\\.natalie-segal\\.com/(.*)
+      - traefik.http.middlewares.natalie-www-redirect.redirectregex.replacement=https://natalie-segal.com/$${1}
+      - traefik.http.middlewares.natalie-www-redirect.redirectregex.permanent=true
     restart: unless-stopped
 
 networks:
