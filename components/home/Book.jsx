@@ -57,7 +57,13 @@ const Book = () => {
               <Button tone="dark" href="/book">
                 Read More
               </Button>
-              <Button href="/https://amazon.com/dp/B0FTTHB1D2">Buy Now</Button>
+              <Button
+                href="https://amazon.com/dp/B0FTTHB1D2"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Buy Now
+              </Button>
             </div>
           </div>
         </div>

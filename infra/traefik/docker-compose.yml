@@ -22,9 +22,15 @@ services:
       - ./letsencrypt:/letsencrypt
     networks:
       - proxy
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
     restart: unless-stopped
 
 networks:
   proxy:
     external: true
-

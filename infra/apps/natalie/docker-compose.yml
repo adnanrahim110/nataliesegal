@@ -5,8 +5,30 @@ services:
     networks:
       - proxy
       - internal
+    init: true
     volumes:
       - ./uploads:/app/public/uploads
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "const http=require('http');const get=(p)=>new Promise((res,rej)=>{const req=http.get('http://127.0.0.1:3000'+p,(r)=>{r.resume();res(r.statusCode);});req.on('error',rej);req.setTimeout(4000,()=>req.destroy(new Error('timeout')));});(async()=>{try{const s=await get('/api/healthz');if(s===200)process.exit(0);if(s!==404)process.exit(1);}catch(e){};try{const s2=await get('/');process.exit(s2===200?0:1);}catch(e){process.exit(1);}})();",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     labels:
       - traefik.enable=true
       - traefik.http.routers.natalie.rule=Host(`natalie-segal.com`)

@@ -40,6 +40,7 @@ async function main() {
       email VARCHAR(190) NOT NULL UNIQUE,
       name VARCHAR(190) NOT NULL,
       role ENUM('admin','editor','user') NOT NULL DEFAULT 'admin',
+      avatar_url VARCHAR(512) NULL,
       password_hash VARCHAR(255) NOT NULL,
       password_salt VARCHAR(255) NOT NULL,
       created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -87,6 +88,31 @@ async function main() {
       published TINYINT(1) NOT NULL DEFAULT 1,
       published_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB;
+  `);
+
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS blog_comments (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      blog_id INT NOT NULL,
+      name VARCHAR(190) NOT NULL,
+      message TEXT NOT NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT fk_blog_comments_blog FOREIGN KEY (blog_id) REFERENCES blogs(id) ON DELETE CASCADE,
+      INDEX idx_blog_comments_blog_created (blog_id, created_at)
+    ) ENGINE=InnoDB;
+  `);
+
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS email_change_requests (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      user_id INT NOT NULL,
+      new_email VARCHAR(190) NOT NULL,
+      code_hash CHAR(64) NOT NULL,
+      expires_at DATETIME NOT NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT fk_email_change_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      UNIQUE KEY uniq_email_change_user (user_id)
     ) ENGINE=InnoDB;
   `);
 

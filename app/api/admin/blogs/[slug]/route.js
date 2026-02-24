@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { getSessionWithUser } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 
 async function requireEditor(req) {
   const cookie = req.headers.get("cookie") || "";
@@ -63,6 +64,7 @@ export async function PATCH(req, { params }) {
     vals.push(slug);
     await query(`UPDATE blogs SET ${cols.join(", ")} WHERE slug = ?`, vals);
     const newSlug = fields.slug || slug;
+    revalidateTag("blogs");
     return NextResponse.json({ ok: true, slug: newSlug });
   } catch (err) {
     console.error("PATCH /api/admin/blogs/[slug] error", err);
@@ -79,10 +81,10 @@ export async function DELETE(req, { params }) {
     if (!sess) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const { slug } = params || {};
     await query(`DELETE FROM blogs WHERE slug = ?`, [slug]);
+    revalidateTag("blogs");
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("DELETE /api/admin/blogs/[slug] error", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
-

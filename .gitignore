@@ -23,7 +23,10 @@
 # misc
 .DS_Store
 *.pem
-*.sql
+# *.sql
+
+# allow versioned schema (keeps dumps ignored)
+!sql/schema.sql
 
 # debug
 npm-debug.log*

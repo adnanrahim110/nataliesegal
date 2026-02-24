@@ -6,16 +6,22 @@ import SectionTitle from "@/components/ui/SectionTitle";
 import { motion } from "motion/react";
 import React, { useEffect, useState } from "react";
 
-export default function BlogsList() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function BlogsList({ initialPosts }) {
+  const hasInitial = Array.isArray(initialPosts);
+  const [posts, setPosts] = useState(() => (hasInitial ? initialPosts : []));
+  const [loading, setLoading] = useState(() => !hasInitial);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (Array.isArray(initialPosts)) {
+      setPosts(initialPosts);
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/blogs", { cache: "no-store" });
+        const res = await fetch("/api/blogs");
         const data = await res.json();
         if (!res.ok) throw new Error(data?.error || "Failed to load blogs");
         if (!cancelled) setPosts(Array.isArray(data.posts) ? data.posts : []);
@@ -28,7 +34,7 @@ export default function BlogsList() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initialPosts]);
 
   return (
     <motion.section

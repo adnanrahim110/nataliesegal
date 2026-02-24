@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { sendForgotPasswordEmail } from "@/lib/email";
 import { getSiteUrl } from "@/lib/url";
+import { getClientIp, rateLimit } from "@/lib/rateLimit";
 
 const RESET_TOKEN_BYTES = 32;
 const RESET_EXPIRY_MINUTES = 60;
@@ -15,29 +16,6 @@ function getAppUrl(req) {
   const origin = req.headers.get("origin");
   if (origin && origin.startsWith("http")) return origin.replace(/\/$/, "");
   return getSiteUrl();
-}
-
-async function ensurePasswordResetSchema() {
-  await query(`
-    CREATE TABLE IF NOT EXISTS password_resets (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      user_id INT NOT NULL,
-      token_hash CHAR(64) NOT NULL UNIQUE,
-      expires_at DATETIME NOT NULL,
-      used_at DATETIME NULL,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      CONSTRAINT fk_password_resets_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    ) ENGINE=InnoDB;
-  `);
-
-  const columns = await query(
-    "SHOW COLUMNS FROM password_resets LIKE 'used_at'"
-  );
-  if (columns.length === 0) {
-    await query(
-      "ALTER TABLE password_resets ADD COLUMN used_at DATETIME NULL AFTER expires_at"
-    );
-  }
 }
 
 export async function POST(req) {
@@ -58,7 +36,17 @@ export async function POST(req) {
     return NextResponse.json({ error: "Enter a valid email address" }, { status: 400 });
   }
 
-  await ensurePasswordResetSchema();
+  const ip = getClientIp(req);
+  const rl = rateLimit(`forgot-password:${ip}`, { limit: 5, windowMs: 60 * 60 * 1000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(Math.ceil(rl.retryAfterMs / 1000)) },
+      }
+    );
+  }
 
   try {
     const users = await query(

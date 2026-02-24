@@ -57,6 +57,7 @@ jobs:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
           GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          APP_IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
         run: |
           set -euo pipefail
 
@@ -67,7 +68,7 @@ jobs:
           SSH_PORT="${VPS_PORT:-22}"
 
           ssh -o StrictHostKeyChecking=no -p "$SSH_PORT" "$VPS_USER@$VPS_HOST" \
-            "DEPLOY_PATH='$DEPLOY_PATH' GHCR_USERNAME='${GHCR_USERNAME:-}' GHCR_TOKEN='${GHCR_TOKEN:-}' bash -s" <<'SSH'
+            "DEPLOY_PATH='$DEPLOY_PATH' GHCR_USERNAME='${GHCR_USERNAME:-}' GHCR_TOKEN='${GHCR_TOKEN:-}' APP_IMAGE='${APP_IMAGE:-}' bash -s" <<'SSH'
           set -euo pipefail
 
           DEPLOY_PATH="${DEPLOY_PATH:-/srv/apps/natalie}"
@@ -77,7 +78,28 @@ jobs:
           fi
 
           cd "${DEPLOY_PATH}"
-          docker compose pull
-          docker compose up -d --remove-orphans
-          docker image prune -f
+          : "${APP_IMAGE:?Missing APP_IMAGE}"
+
+          APP_IMAGE="$APP_IMAGE" docker compose pull
+          APP_IMAGE="$APP_IMAGE" docker compose up -d --remove-orphans
+
+          # Wait for healthcheck (if configured) so deploy fails fast.
+          cid="$(docker compose ps -q natalie || true)"
+          if [ -n "$cid" ]; then
+            for i in $(seq 1 30); do
+              status="$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}' "$cid" 2>/dev/null || echo starting)"
+              if [ "$status" = "healthy" ] || [ "$status" = "no-healthcheck" ]; then
+                break
+              fi
+              sleep 2
+            done
+            if [ "$status" != "healthy" ] && [ "$status" != "no-healthcheck" ]; then
+              echo "Container did not become healthy: $status"
+              docker logs --tail 200 "$cid" || true
+              exit 1
+            fi
+          fi
+
+          # Keep recent images for rollback; prune older dangling layers.
+          docker image prune -f --filter "until=168h"
           SSH

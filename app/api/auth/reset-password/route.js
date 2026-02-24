@@ -1,9 +1,8 @@
-"use server";
-
 import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
+import { getClientIp, rateLimit } from "@/lib/rateLimit";
 
 const RESET_EXPIRY_MINUTES = 60;
 
@@ -11,31 +10,7 @@ function hashToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-async function ensurePasswordResetSchema() {
-  await query(`
-    CREATE TABLE IF NOT EXISTS password_resets (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      user_id INT NOT NULL,
-      token_hash CHAR(64) NOT NULL UNIQUE,
-      expires_at DATETIME NOT NULL,
-      used_at DATETIME NULL,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      CONSTRAINT fk_password_resets_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    ) ENGINE=InnoDB;
-  `);
-
-  const columns = await query(
-    "SHOW COLUMNS FROM password_resets LIKE 'used_at'"
-  );
-  if (columns.length === 0) {
-    await query(
-      "ALTER TABLE password_resets ADD COLUMN used_at DATETIME NULL AFTER expires_at"
-    );
-  }
-}
-
 async function findResetRequest(token) {
-  await ensurePasswordResetSchema();
   if (!token) return null;
   const hash = hashToken(token);
   const rows = await query(
@@ -52,6 +27,18 @@ export async function GET(req) {
     return NextResponse.json(
       { valid: false, error: "Missing reset token." },
       { status: 400 }
+    );
+  }
+
+  const ip = getClientIp(req);
+  const rl = rateLimit(`reset-password:get:${ip}`, { limit: 60, windowMs: 60 * 60 * 1000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { valid: false, error: "Too many requests. Try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(Math.ceil(rl.retryAfterMs / 1000)) },
+      }
     );
   }
 
@@ -104,6 +91,18 @@ export async function POST(req) {
     return NextResponse.json(
       { error: "Password must be at least 8 characters long." },
       { status: 400 }
+    );
+  }
+
+  const ip = getClientIp(req);
+  const rl = rateLimit(`reset-password:post:${ip}`, { limit: 30, windowMs: 60 * 60 * 1000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(Math.ceil(rl.retryAfterMs / 1000)) },
+      }
     );
   }
 

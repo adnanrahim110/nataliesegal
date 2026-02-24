@@ -3,22 +3,18 @@ import BlogSharePanel from "@/components/blogs/BlogSharePanel";
 import Comments from "@/components/blogs/Comments";
 import ReadingProgress from "@/components/blogs/ReadingProgress";
 import SectionSubtitle from "@/components/ui/SectionSubtitle";
-import { query } from "@/lib/db";
+import { getPublishedPostBySlug, getRelatedPosts } from "@/lib/blogs";
 import { CalendarDays, Clock, Tag, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
+  const slug = params?.slug;
   if (!slug) return { title: "Blog Not Found" };
 
-  const rows = await query(
-    `SELECT title, excerpt, cover FROM blogs WHERE slug = ? AND published = 1 LIMIT 1`,
-    [slug]
-  );
-  if (rows.length === 0) return { title: "Blog Not Found" };
-  const post = rows[0];
+  const post = await getPublishedPostBySlug(slug);
+  if (!post) return { title: "Blog Not Found" };
   return {
     title: `${post.title} | Natalie Segal`,
     description: post.excerpt || "",
@@ -31,54 +27,10 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function BlogDetailPage({ params }) {
-  const { slug } = await params;
-
-  const rows = await query(
-    `SELECT b.id,
-            b.slug,
-            b.title,
-            b.excerpt,
-            b.author,
-            DATE_FORMAT(b.published_at, '%b %e, %Y') AS date,
-            b.read_time,
-            b.views,
-            COALESCE(c.comment_count, 0) AS comment_count,
-            b.cover,
-            b.category,
-            b.content
-       FROM blogs b
-       LEFT JOIN (
-         SELECT blog_id, COUNT(*) AS comment_count
-           FROM blog_comments
-          GROUP BY blog_id
-       ) c ON c.blog_id = b.id
-      WHERE b.slug = ? AND b.published = 1
-      LIMIT 1`,
-    [slug]
-  );
-  if (rows.length === 0) notFound();
-  const post = {
-    id: rows[0].id,
-    slug: rows[0].slug,
-    title: rows[0].title,
-    excerpt: rows[0].excerpt || "",
-    author: rows[0].author || "",
-    date: rows[0].date || "",
-    readTime: rows[0].read_time || null,
-    views: Number(rows[0].views || 0),
-    comments: Number(rows[0].comment_count || 0),
-    cover: rows[0].cover || "/imgs/stories.avif",
-    category: rows[0].category || null,
-    content: rows[0].content || "",
-  };
-  const related = await query(
-    `SELECT slug, title, cover, category
-       FROM blogs
-      WHERE published = 1 AND slug <> ?
-      ORDER BY published_at DESC
-      LIMIT 3`,
-    [slug]
-  );
+  const slug = params?.slug;
+  const post = await getPublishedPostBySlug(slug);
+  if (!post) notFound();
+  const related = await getRelatedPosts(slug, 3);
 
   return (
     <div className="relative">

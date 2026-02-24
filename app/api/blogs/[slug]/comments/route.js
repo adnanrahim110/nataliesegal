@@ -1,5 +1,6 @@
 import { getPool, query } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { getClientIp, rateLimit } from "@/lib/rateLimit";
 
 function toIso(value) {
   if (!value) return new Date().toISOString();
@@ -13,8 +14,7 @@ function toIso(value) {
 export async function GET(_req, { params }) {
   try {
     await getPool();
-    const paramsData = await params;
-    const slug = paramsData?.slug;
+    const slug = params?.slug;
     if (!slug) {
       return NextResponse.json({ error: "Missing slug" }, { status: 400 });
     }
@@ -24,7 +24,8 @@ export async function GET(_req, { params }) {
          FROM blog_comments c
          INNER JOIN blogs b ON b.id = c.blog_id
         WHERE b.slug = ?
-        ORDER BY c.created_at DESC`,
+        ORDER BY c.created_at DESC
+        LIMIT 200`,
       [slug]
     );
 
@@ -45,10 +46,21 @@ export async function GET(_req, { params }) {
 export async function POST(req, { params }) {
   try {
     await getPool();
-    const paramsData = await params;
-    const slug = paramsData?.slug;
+    const slug = params?.slug;
     if (!slug) {
       return NextResponse.json({ error: "Missing slug" }, { status: 400 });
+    }
+
+    const ip = getClientIp(req);
+    const rl = rateLimit(`comment:${ip}:${slug}`, { limit: 10, windowMs: 60 * 1000 });
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Too many comments. Please slow down." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(Math.ceil(rl.retryAfterMs / 1000)) },
+        }
+      );
     }
 
     const blogRows = await query(`SELECT id FROM blogs WHERE slug = ? LIMIT 1`, [slug]);
@@ -83,7 +95,19 @@ export async function POST(req, { params }) {
       [blogId, name, message]
     );
 
-    await query(`UPDATE blogs SET comments = comments + 1 WHERE id = ?`, [blogId]);
+    let nextCount = null;
+    try {
+      const rows = await query(
+        `UPDATE blogs
+            SET comments = comments + 1
+          WHERE id = ?
+        RETURNING comments`,
+        [blogId]
+      );
+      nextCount = Number(rows?.[0]?.comments);
+    } catch {
+      await query(`UPDATE blogs SET comments = comments + 1 WHERE id = ?`, [blogId]);
+    }
 
     const insertedId = result?.insertId;
     const [insertedRow] =
@@ -105,12 +129,12 @@ export async function POST(req, { params }) {
         createdAt: new Date().toISOString(),
       };
 
-    const [{ count }] = await query(
-      `SELECT COUNT(*) AS count FROM blog_comments WHERE blog_id = ?`,
-      [blogId]
-    );
+    if (Number.isNaN(nextCount) || nextCount == null) {
+      const rows = await query(`SELECT comments FROM blogs WHERE id = ? LIMIT 1`, [blogId]);
+      nextCount = Number(rows?.[0]?.comments);
+    }
 
-    return NextResponse.json({ ok: true, comment, count: Number(count || 0) });
+    return NextResponse.json({ ok: true, comment, count: Number(nextCount || 0) });
   } catch (err) {
     console.error("POST /api/blogs/[slug]/comments error", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

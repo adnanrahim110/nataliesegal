@@ -11,6 +11,7 @@ const Button = ({
   disabled,
   className,
   target,
+  rel,
   tone = "light",
   contentClassName,
 }) => {
@@ -18,7 +19,7 @@ const Button = ({
 
   return (
     <Tag
-      {...(href ? { href, target } : { onClick, type, disabled })}
+      {...(href ? { href, target, rel } : { onClick, type, disabled })}
       className={cn(
         "cursor-pointer inline-block font-semibold overflow-hidden relative z-100 border group px-8 py-2",
         tone === "dark" ? "border-black" : "border-primary-500",

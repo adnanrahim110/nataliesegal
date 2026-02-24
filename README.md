@@ -49,10 +49,11 @@ npm install mysql2
 
 ### 2) Configure database
 
-Create the database and tables:
+Create the database and tables (schema is managed outside of HTTP requests):
 
 ```
-mysql -u root -p < sql/schema.sql
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS natalie_site CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p natalie_site < sql/schema.sql
 ```
 
 Set env variables (create `.env.local`):
@@ -63,6 +64,7 @@ DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=
 DB_NAME=natalie_site
+DB_CONNECTION_LIMIT=5
 ```
 
 ### 3) Create admin user (dev only)

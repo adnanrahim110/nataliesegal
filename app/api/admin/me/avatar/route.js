@@ -10,8 +10,6 @@ export async function POST(req) {
   const sess = await getSessionWithUser(token);
   if (!sess) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
-    await maybeAddAvatarColumn();
-
     // Fetch current avatar URL to remove after successful upload
     let oldUrl = null;
     try {
@@ -52,13 +50,4 @@ export async function POST(req) {
     console.error("upload avatar error", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
-}
-
-async function maybeAddAvatarColumn() {
-  try {
-    const rows = await query(`SHOW COLUMNS FROM users LIKE 'avatar_url'`);
-    if (rows.length === 0) {
-      await query(`ALTER TABLE users ADD COLUMN avatar_url VARCHAR(512) NULL AFTER role`);
-    }
-  } catch {}
 }

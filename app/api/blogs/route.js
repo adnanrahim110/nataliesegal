@@ -1,46 +1,15 @@
 import { NextResponse } from "next/server";
 import { getPool, query } from "@/lib/db";
 import { getSessionWithUser } from "@/lib/auth";
+import { getPublishedPosts } from "@/lib/blogs";
+import { revalidateTag } from "next/cache";
 
 export async function GET() {
   try {
-    await getPool();
-    const rows = await query(
-      `SELECT b.id,
-              b.slug,
-              b.title,
-              b.excerpt,
-              b.author,
-              DATE_FORMAT(b.published_at, '%b %e, %Y') AS date,
-              b.read_time,
-              b.views,
-              COALESCE(c.comment_count, 0) AS comments,
-              b.cover,
-              b.category
-         FROM blogs b
-         LEFT JOIN (
-           SELECT blog_id, COUNT(*) AS comment_count
-             FROM blog_comments
-            GROUP BY blog_id
-         ) c ON c.blog_id = b.id
-        WHERE b.published = 1
-        ORDER BY b.published_at DESC`
-    );
-    // Normalize fields to what UI expects
-    const posts = rows.map((r) => ({
-      id: r.id,
-      slug: r.slug,
-      title: r.title,
-      excerpt: r.excerpt || "",
-      author: r.author || "",
-      date: r.date || "",
-      readTime: r.read_time || null,
-      views: Number(r.views || 0),
-      comments: Number(r.comments || 0),
-      cover: r.cover || "/imgs/stories.avif",
-      category: r.category || null,
-    }));
-    return NextResponse.json({ posts });
+    const posts = await getPublishedPosts();
+    const res = NextResponse.json({ posts });
+    res.headers.set("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
+    return res;
   } catch (err) {
     console.error("GET /api/blogs error", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
@@ -82,6 +51,7 @@ export async function POST(req) {
         now,
       ]
     );
+    revalidateTag("blogs");
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("POST /api/blogs error", err);

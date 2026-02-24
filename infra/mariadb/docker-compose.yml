@@ -7,6 +7,21 @@ services:
       - mariadb_data:/var/lib/mysql
     networks:
       - internal
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mariadb-admin ping -h 127.0.0.1 -u root -p\"$${MARIADB_ROOT_PASSWORD}\" --silent",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: unless-stopped
 
 volumes:
@@ -15,4 +30,3 @@ volumes:
 networks:
   internal:
     external: true
-

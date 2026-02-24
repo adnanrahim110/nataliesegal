@@ -1,5 +1,6 @@
 import { createSession, verifyPassword } from "@/lib/auth";
 import { getPool, query } from "@/lib/db";
+import { getClientIp, rateLimit } from "@/lib/rateLimit";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -9,6 +10,18 @@ export async function POST(req) {
     const { email, password, remember } = body || {};
     if (!email || !password)
       return NextResponse.json({ error: "Missing email or password" }, { status: 400 });
+
+    const ip = getClientIp(req);
+    const rl = rateLimit(`login:${ip}`, { limit: 20, windowMs: 5 * 60 * 1000 });
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Too many login attempts. Try again later." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(Math.ceil(rl.retryAfterMs / 1000)) },
+        }
+      );
+    }
 
     const rows = await query(
       `SELECT id, email, name, role, password_hash, password_salt
@@ -24,7 +37,6 @@ export async function POST(req) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
 
     const ua = req.headers.get("user-agent") || null;
-    const ip = req.headers.get("x-forwarded-for") || null;
     const maxAgeDays = remember ? 7 : 1;
     const token = await createSession(user.id, ua, ip, maxAgeDays);
 

@@ -1,24 +1,7 @@
-"use server";
-
 import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { getSessionWithUser } from "@/lib/auth";
 import { query } from "@/lib/db";
-
-async function ensureTable() {
-  await query(`
-    CREATE TABLE IF NOT EXISTS email_change_requests (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      user_id INT NOT NULL,
-      new_email VARCHAR(190) NOT NULL,
-      code_hash CHAR(64) NOT NULL,
-      expires_at DATETIME NOT NULL,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      CONSTRAINT fk_email_change_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-      UNIQUE KEY uniq_email_change_user (user_id)
-    ) ENGINE=InnoDB;
-  `);
-}
 
 export async function POST(request) {
   const cookieHeader = request.headers.get("cookie") || "";
@@ -39,8 +22,6 @@ export async function POST(request) {
   if (!code) {
     return NextResponse.json({ error: "Verification code is required." }, { status: 400 });
   }
-
-  await ensureTable();
 
   const rows = await query(
     "SELECT * FROM email_change_requests WHERE user_id = ? LIMIT 1",
