@@ -23,14 +23,14 @@ const socials = [
   },
   {
     name: "Instagram",
-    href: "https://www.instagram.com/nnataliedeesegal/",
+    href: "https://www.instagram.com/nataliedeesegal/",
     Icon: FaInstagram,
     hover:
       "hover:text-[#E4405F] hover:border-[#E4405F]/50 hover:bg-[#E4405F]/10",
   },
   {
     name: "LinkedIn",
-    href: "#",
+    href: "https://www.linkedin.com/in/nataliedsegal",
     Icon: FaLinkedin,
     hover:
       "hover:text-[#0A66C2] hover:border-[#0A66C2]/50 hover:bg-[#0A66C2]/10",
@@ -53,7 +53,7 @@ const Footer = () => {
 
       <div className="container pt-10 pb-5 md:pt-12">
         <div className="relative rounded-2xl border border-white/10 bg-neutral-900/60 backdrop-blur-md shadow-2xl p-8 md:p-10">
-          <div className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-tr from-primary-500/10 via-transparent to-primary-300/10 blur-xl" />
+          <div className="pointer-events-none absolute -inset-px rounded-2xl bg-linear-to-tr from-primary-500/10 via-transparent to-primary-300/10 blur-xl" />
           <div className="relative grid gap-10 md:gap-14 md:grid-cols-12">
             <div className="space-y-4 md:col-span-5">
               <Link

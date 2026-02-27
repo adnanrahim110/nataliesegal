@@ -72,10 +72,14 @@ export default function ContactContent() {
     },
     {
       icon: FaInstagram,
-      href: "https://www.instagram.com/nnataliedeesegal/",
+      href: "https://www.instagram.com/nataliedeesegal/",
       label: "Instagram",
     },
-    { icon: FaLinkedin, href: "#", label: "LinkedIn" },
+    {
+      icon: FaLinkedin,
+      href: "https://www.linkedin.com/in/nataliedsegal",
+      label: "LinkedIn",
+    },
   ];
 
   return (
